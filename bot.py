@@ -1,10 +1,10 @@
-
-import discord, config
+import discord
 from discord.ext import commands
 from database import Database
+import config
 
 bot = commands.Bot(command_prefix=config.PREFIX, description='A bot to keep track of our wins and kills')
-db = Database(debug = True)
+db = Database(debug=True)
 
 @bot.event
 async def on_ready():
@@ -40,7 +40,6 @@ async def wins():
         title="Rank de vitórias",
         color=0xe67e22  
     )
-    
     for win in range(5):
         winners = str()
         for key, value in games_list[win].winners.items():
@@ -50,7 +49,6 @@ async def wins():
                 value=winners,
                 inline=False
             )
-
     embed.set_footer(
         text="Total de partidas: {}".format(len(games_list))
     )
@@ -63,7 +61,6 @@ async def jogadores():
         title="Rank de jogadores",
         color=0xe67e22
     )
-
     for i in range(5):
         id = players_list[i].id
         kills = players_list[i].kills
@@ -74,8 +71,6 @@ async def jogadores():
             inline=False
         )
     await bot.say(embed=embed)
-        
-
 
 @bot.command(pass_context=True)
 async def teste(ctx):

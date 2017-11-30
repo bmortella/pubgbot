@@ -1,31 +1,28 @@
-
 import operator
 from tinydb import TinyDB, Query
 from game_model import Game
 from player_model import Player
 
 class Database:
-    
-    def __init__(self, debug = False):
+
+    def __init__(self, debug=False):
         self.__connection = TinyDB('data.json')
         self.__debug = debug
         if debug:
             print("Conexão estabelecida com a db")
-    
+
     def __add_players(self, players):
         players_table = self.__connection.table('players')
         for id, kills in players.items():
             player = players_table.get(Query().id == id)
             if player:
                 kills += player['kills']
-            
             players_table.upsert({'id':id, 'kills':kills}, Query().id == id)
 
     def add_win(self, data):
         games_table = self.__connection.table('games')
         games_table.insert(data)
         self.__add_players(data['players'])
-        
 
     #Return an ordered list (by total kills) of wins
     @property
