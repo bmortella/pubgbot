@@ -1,4 +1,4 @@
 config.py
-data.json
+data.db
 __pycache__
 .vscode
