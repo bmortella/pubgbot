@@ -9,14 +9,14 @@ class BaseModel(peewee.Model):
 
 class Player(BaseModel):
 
-    discord_id = peewee.CharField()
-    total_kills = peewee.IntegerField()
+    discord_id = peewee.CharField(unique=True)
+    total_kills = peewee.IntegerField(default=0)
 
 
 class Win(BaseModel):
  
     date = peewee.DateTimeField(default=datetime.datetime.now)
-    total_kills = peewee.IntegerField()
+    total_kills = peewee.IntegerField(default=0)
 
 class Winner(BaseModel):
 

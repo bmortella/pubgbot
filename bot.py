@@ -1,10 +1,10 @@
 import discord
 from discord.ext import commands
-from database import Database
+from manager import Manager
 import config
 
 bot = commands.Bot(command_prefix=config.PREFIX, description='A bot to keep track of our wins and kills')
-db = Database(debug=True)
+db = Manager()
 
 @bot.event
 async def on_ready():
@@ -14,18 +14,32 @@ async def on_ready():
 
 @bot.command(pass_context=True)
 async def winner(context, *args : str):
-    if len(args) % 2 == 0:
-        players_dict = dict()
-        total = 0
-        for i in range(0, len(args), 2):
-            kills = int(args[i+1])
-            players_dict[args[i]] = kills
-            total += kills
-        data = {'players':players_dict, 'total':total}
-        db.add_win(data)
-        await bot.say("Registrado")
+    len_args = len(args)
+    if len_args % 2 == 0:
+        if len_args / 2 >= 3:
+            data = dict()
+            do = True
+            i = 0
+            while i < len(args) and do:
+                player = args[i]
+                if not player.startswith("<"):
+                    await bot.say("Menção feita de forma errada: {}".format(player))
+                    do = False
+                    break
+                try:
+                    kills = int(args[i+1])
+                except ValueError:
+                    do = False
+                    await bot.say("Erro, {} não é um número.".format(args[i+1]))
+                data[player] = kills
+                i += 2
+            if do:
+                db.add_win(data)
+                await bot.say("Registrado.")
+        else:
+            await bot.say("{}, registre apenas wins com 3 ou mais jogadores.".format(context.message.author.mention))
     else:
-        await bot.say("{}, há algo de errado com os parâmetros.".format(context.author.mention))
+        await bot.say("{}, número errado de parâmetros.".format(context.message.author.mention))
 
 
 @bot.group(pass_context=True)
