@@ -69,7 +69,7 @@ async def wins():
                 winners += "{} : {} kills\n".format(winner.player.discord_id, winner.kills)
             embed.add_field(
                     name="{}°".format(r),
-                    value=winners,
+                    value=winners+"\nTotal: {}\nData: {}".format(win.total_kills, win.date.strftime("%d/%m/%y %H:%M")),
                     inline=False
                 )
             r += 1
@@ -104,13 +104,6 @@ async def jogadores():
         await bot.say(embed=embed)
     else:
         await bot.say("Ainda não há jogadores.")
-
-@bot.command(pass_context=True)
-async def teste(ctx):
-    await bot.send_message(ctx.message.channel, ctx.message.author)
-    await bot.send_message(ctx.message.channel, ctx.message.content)
-    print(ctx.message.author.id)
-    print (ctx.message.content)
 
 
 bot.pm_help = True
