@@ -49,24 +49,29 @@ async def rank(ctx):
 
 @rank.command()
 async def wins():
-    games_list = db.wins
-    embed = discord.Embed(
-        title="Rank de vitórias",
-        color=0xe67e22  
-    )
-    for win in range(5):
-        winners = str()
-        for key, value in games_list[win].winners.items():
-            winners += "{} : {} kills\n".format(key, value)
-        embed.add_field(
-                name="{}°".format(win + 1),
-                value=winners,
-                inline=False
-            )
-    embed.set_footer(
-        text="Total de partidas: {}".format(len(games_list))
-    )
-    await bot.say(embed=embed)
+    wins, wins_total = db.rank_wins()
+    if wins_total > 0:
+        embed = discord.Embed(
+            title="Rank de vitórias",
+            color=0xe67e22  
+        )
+        r = 1
+        for win in wins:
+            winners = str()
+            for winner in win.winners:
+                winners += "{} : {} kills\n".format(winner.player.discord_id, winner.kills)
+            embed.add_field(
+                    name="{}°".format(r),
+                    value=winners,
+                    inline=False
+                )
+            r += 1
+        embed.set_footer(
+            text="Total de partidas: {}".format(wins_total)
+        )
+        await bot.say(embed=embed)
+    else:
+        await bot.say("Ainda não há vitórias.")
 
 @rank.command()
 async def jogadores():
