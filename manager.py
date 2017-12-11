@@ -25,8 +25,9 @@ class Manager:
             total_kills += kills
         win.total_kills = total_kills
         win.save()
+        
 
-    def rank_wins(self):
-        wins_total = Win.select().count()
-        wins = (Win.select().order_by(Win.total_kills.desc()).limit(5))
-        return (wins, wins_total)
+    def rank(self, obj):
+        total = obj.select().count()
+        obj_list = (obj.select().order_by(obj.total_kills.desc()).limit(5))
+        return (obj_list, total)

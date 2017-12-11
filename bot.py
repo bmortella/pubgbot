@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from models import Player, Win
 from manager import Manager
 import config
 
@@ -49,7 +50,7 @@ async def rank(ctx):
 
 @rank.command()
 async def wins():
-    wins, wins_total = db.rank_wins()
+    wins, wins_total = db.rank(Win)
     if wins_total > 0:
         embed = discord.Embed(
             title="Rank de vitórias",
@@ -75,21 +76,28 @@ async def wins():
 
 @rank.command()
 async def jogadores():
-    players_list = db.players
-    embed = discord.Embed(
-        title="Rank de jogadores",
-        color=0xe67e22
-    )
-    for i in range(5):
-        id = players_list[i].id
-        kills = players_list[i].kills
-        player = "{} : {} kills\n".format(id, kills)
-        embed.add_field(
-            name="{}°".format(i + 1),
-            value=player,
-            inline=False
+    players, total = db.rank(Player)
+    if total > 0:
+        embed = discord.Embed(
+            title="Rank de jogadores",
+            color=0xe67e22
         )
-    await bot.say(embed=embed)
+        r = 1
+        for player in players:
+            discord_id = player.discord_id
+            kills = player.total_kills
+            embed.add_field(
+                name="{}°".format(r),
+                value="{} : {} kills\n".format(discord_id, kills),
+                inline=False
+            )
+            r += 1
+        embed.set_footer(
+            text="Total de jogadores: {}".format(total)
+        )
+        await bot.say(embed=embed)
+    else:
+        await bot.say("Ainda não há jogadores.")
 
 @bot.command(pass_context=True)
 async def teste(ctx):
