@@ -26,7 +26,15 @@ async def on_ready():
 @bot.command(pass_context=True)
 async def winner(context, *args : str):
     len_args = len(args)
-    if len_args % 2 == 0:
+    if len_args == 1:
+        try:
+            kills = int(args[0])
+            data = {context.message.author.mention:kills}
+            db.add_win(data, 1)
+            bot.say("Registrado.")
+        except ValueError:
+            pass
+    elif len_args % 2 == 0:
         try:
             if len_args / 2 >= 3 and len_args / 2 <= 4:
                 data = dict()
@@ -104,6 +112,11 @@ async def jogadores():
         await bot.say(embed=embed)
     else:
         await bot.say("Ainda não há jogadores.")
+
+@bot.command()
+async def fechar():
+    bot.close()
+    exit()
 
 
 bot.pm_help = True
