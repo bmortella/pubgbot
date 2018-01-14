@@ -14,6 +14,8 @@ class CommandException(Exception):
         return repr(self.value)
 
 
+win_types = {"solo":1, "duo":2, "squad":4}
+
 bot = commands.Bot(command_prefix=config.PREFIX, description='A bot to keep track of our wins and kills')
 db = Manager()
 
@@ -65,33 +67,39 @@ async def rank(ctx):
         await bot.say('Comando inválido..')
 
 @rank.command()
-async def wins():
-    wins, wins_total = db.rank(Win)
-    if wins_total > 0:
-        embed = discord.Embed(
-            title="Rank de vitórias",
-            color=0xe67e22  
-        )
-        r = 1
-        for win in wins:
-            winners = str()
-            for winner in win.winners:
-                winners += "{} : {} kills\n".format(winner.player.discord_id, winner.kills)
-            embed.add_field(
-                    name="{}°".format(r),
-                    value=winners+"\nTotal: {}\nData: {}".format(win.total_kills, win.date.strftime("%d/%m/%y %H:%M")),
-                    inline=False
-                )
-            r += 1
-        embed.set_footer(
-            text="Total de partidas: {}".format(wins_total)
-        )
-        await bot.say(embed=embed)
-    else:
-        await bot.say("Ainda não há vitórias.")
+async def wins(win_type:str="squad"):
+    try:
+        win_type = win_type.lower()
+        if win_type not in win_types:
+            raise CommandException("Erro, apenas solo, duo ou squad")
+        wins, wins_total = db.rank(Win, win_types[win_type])
+        if wins_total > 0:
+            embed = discord.Embed(
+                title="Rank de vitórias em {}".format(win_type),
+                color=0xe67e22  
+            )
+            r = 1
+            for win in wins:
+                winners = str()
+                for winner in win.winners:
+                    winners += "{} : {} kills\n".format(winner.player.discord_id, winner.kills)
+                embed.add_field(
+                        name="{}°".format(r),
+                        value=winners+"\nTotal: {}\nData: {}".format(win.total_kills, win.date.strftime("%d/%m/%y %H:%M")),
+                        inline=False
+                    )
+                r += 1
+            embed.set_footer(
+                text="Total de partidas: {}".format(wins_total)
+            )
+            await bot.say(embed=embed)
+        else:
+            await bot.say("Ainda não há vitórias.")
+    except CommandException as e:
+        await bot.say(e.value)
 
 @rank.command()
-async def jogadores():
+async def jogadores(win_type:str="squad"):
     players, total = db.rank(Player)
     if total > 0:
         embed = discord.Embed(
@@ -117,6 +125,7 @@ async def jogadores():
 
 @bot.command()
 async def fechar():
+    await bot.say("Saindo...")
     bot.close()
     exit()
 

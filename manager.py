@@ -31,7 +31,12 @@ class Manager:
         win.save()
         
 
-    def rank(self, obj):
-        total = obj.select().count()
-        obj_list = (obj.select().order_by(obj.total_kills.desc()).limit(5))
-        return (obj_list, total)
+    def rank(self, obj, win_type):
+        #total = obj.select().count()
+        #obj_list = (obj.select().order_by(obj.total_kills.desc()).limit(5))
+        if type(obj) is Player:
+            pass
+        else:
+            total = obj.select().where(Win.win_type == win_type).count()
+            obj_list = obj.select().where(Win.win_type == win_type).order_by(obj.total_kills.desc()).limit(5)
+            return (obj_list, total)
