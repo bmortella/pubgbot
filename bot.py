@@ -36,7 +36,8 @@ async def winner(context, *args : str):
             pass
     elif len_args % 2 == 0:
         try:
-            if len_args / 2 >= 3 and len_args / 2 <= 4:
+            nplayers = len_args / 2
+            if nplayers >= 2 and nplayers <= 4:
                 data = dict()
                 for i in range(0, len(args), 2):
                     player = args[i]
@@ -47,10 +48,11 @@ async def winner(context, *args : str):
                     except ValueError:
                         raise CommandException("Erro, {} não é um número.".format(args[i+1]))
                     data[player] = kills
-                db.add_win(data)
+                win_type = nplayers if nplayers != 3 else 4
+                db.add_win(data, win_type)
                 await bot.say("Registrado.")
             else:
-                raise CommandException("{}, registre apenas wins com 3 ou 4 jogadores.".format(context.message.author.mention))
+                raise CommandException("{}, registre apenas wins com no máximo 4 jogadores.".format(context.message.author.mention))
         except CommandException as e:
             await bot.say(e.value)
     else:
