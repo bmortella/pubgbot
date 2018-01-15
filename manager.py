@@ -46,7 +46,7 @@ class Manager:
             obj_list = Player.select().order_by(Player.total_squad.desc()).limit(5)
         return (obj_list, total)
 
-    def rank_wins(self, win_type)
+    def rank_wins(self, win_type):
         total = Win.select().where(Win.win_type == win_type).count()
-        obj_list = Win.select().where(Win.win_type == win_type).order_by(obj.total_kills.desc()).limit(5)
+        obj_list = Win.select().where(Win.win_type == win_type).order_by(Win.total_kills.desc()).limit(5)
         return (obj_list, total)
