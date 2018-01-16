@@ -131,12 +131,5 @@ async def jogadores(win_type:str="squad"):
     except CommandException as e:
         await bot.say(e.value)
 
-@bot.command()
-async def fechar():
-    await bot.say("Saindo...")
-    bot.close()
-    exit()
-
-
 bot.pm_help = True
 bot.run(config.TOKEN)

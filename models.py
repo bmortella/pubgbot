@@ -36,14 +36,7 @@ class Winner(BaseModel):
 
 if __name__ == '__main__':
     '''
-    try:
-        db.create_tables([Player, Win, Winner])
-    except Exception:
-        pass
-    ###
-    pla = Player.create(discord_id="656565", total_kills=2)
-    win = Win.create()
-    winp = Winner.create(win=win, player=pla, kills=2)
-    '''
     pla = Player.select().order_by(Player.total_kills.desc()).get()
     print(pla)
+    '''
+    
