@@ -115,7 +115,8 @@ async def jogadores(win_type:str="squad"):
             r = 1
             for player in players:
                 discord_id = player.discord_id
-                kills = player.total_kills
+                if win_type == "geral": win_type = "kills"
+                kills = eval("player.total_{}".format(win_type))
                 embed.add_field(
                     name="{}°".format(r),
                     value="{} : {} kills\n".format(discord_id, kills),
