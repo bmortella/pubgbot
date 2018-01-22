@@ -47,6 +47,8 @@ async def winner(context, *args : str):
                         raise CommandException("Menção feita de forma errada: {}".format(player))
                     try:
                         kills = int(args[i+1])
+                        if kills < 0:
+                            raise CommandException("Erro, não é possivel registrar com número negativo.")
                     except ValueError:
                         raise CommandException("Erro, {} não é um número.".format(args[i+1]))
                     data[player] = kills
