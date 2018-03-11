@@ -1,5 +1,4 @@
 import peewee, datetime
-from playhouse.fields import ManyToManyField
 
 db = peewee.SqliteDatabase('data.db')
 
